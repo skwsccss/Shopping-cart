@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var cors = require('cors');
 var mongoose = require('mongoose');
 var app = express();
+var expressHbs = require('express-handlebars');
 require('dotenv').config();
 
 
@@ -20,8 +21,8 @@ mongoose.connect(MONGOURL, { useNewUrlParser: true }, err => {
 app.use(cors());
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.engine('.hbs', expressHbs({ defaultLayout: 'layout', extname: '.hbs'}));
+app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
