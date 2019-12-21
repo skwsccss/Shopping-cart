@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "seed": "node seed/product-seeder.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
