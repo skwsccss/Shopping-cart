@@ -10,6 +10,10 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var app = express();
 var expressHbs = require('express-handlebars');
+var session = require('express-session')
+var passport = require('passport');
+var flash = require('connect-flash');
+require('./config/passport');
 require('dotenv').config();
 
 
@@ -21,18 +25,21 @@ mongoose.connect(MONGOURL, { useNewUrlParser: true }, err => {
 app.use(cors());
 
 // view engine setup
-app.engine('.hbs', expressHbs({ defaultLayout: 'layout', extname: '.hbs'}));
+app.engine('.hbs', expressHbs({ defaultLayout: 'layout', extname: '.hbs' }));
 app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({ secret: 'skw', resave: false, saveUninitialized: false }));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

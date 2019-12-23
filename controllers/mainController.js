@@ -1,4 +1,5 @@
-var productModel = require('../models/product')
+var productModel = require('../models/product');
+
 
 class mainController {
     async index(req, res) {
@@ -9,6 +10,14 @@ class mainController {
             productChunks.push(products.slice(i, i + chunkSize));
         }
         res.render('shop/index', { title: 'Shopping Cart', products: productChunks });
+    }
+    async signup(req, res, next) {
+        let messages = req.flash('error')
+        if (req.method === 'GET') {
+            res.render('auth/signup', { title: 'Sign Up', csrfToken: req.csrfToken(), messages: messages, hasErrors: messages.length > 0 });
+        } else if (req.method === 'POST') {
+            res.redirect('/');
+        }
     }
 }
 

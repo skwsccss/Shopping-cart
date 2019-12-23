@@ -4,9 +4,11 @@ var mainController = require('../controllers/mainController')
 var main = new mainController();
 var bodyParser = require('body-parser');
 
+
 router.use(bodyParser.json());
 /* GET home page. */
 router.get('/', main.index);
+// router.get('')
 
 module.exports = router;
 
