@@ -8,6 +8,19 @@ var csrfProtection = csrf();
 var passport = require('passport')
 router.use(csrfProtection);
 
+router.get('/profile', isLoggedIn, (req, res, next) => {
+  res.render('auth/profile');
+});
+
+router.get('/logout', isLoggedIn, (req, res) => {
+  req.logOut();
+  res.redirect('/');
+});
+
+router.use('/', notLoggedIn, (req, res, next) => {
+  next();
+});
+
 /* GET users listing. */
 router.get('/signup', main.signup);
 router.post('/signup', passport.authenticate('local-signup', {
@@ -18,8 +31,28 @@ router.post('/signup', passport.authenticate('local-signup', {
 // router.post('/signup', (req, res) => {
 //   console.log(req.method, req.body);
 // });
-router.get('/profile', (req, res, next) => {
-  res.render('auth/profile');
-});
+router.get('/signin', main.signin);
+// router.post('/signin', main.signin);
+router.post('/signin', passport.authenticate('local-signin', {
+  successRedirect: '/users/profile',
+  failureRedirect: '/users/signin',
+  failureFlash: true
+}));
+
+
 
 module.exports = router;
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/');
+}
+
+function notLoggedIn(req, res, next) {
+  if (!req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/');
+}

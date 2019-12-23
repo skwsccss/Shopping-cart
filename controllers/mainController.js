@@ -1,4 +1,5 @@
 var productModel = require('../models/product');
+var passport = require('passport')
 
 
 class mainController {
@@ -18,6 +19,13 @@ class mainController {
         } else if (req.method === 'POST') {
             res.redirect('/');
         }
+    }
+
+    async signin(req, res, next) {
+        let messages = req.flash('error');
+        if (req.method === 'GET') {
+            res.render('auth/signin', { title: 'Sign In', csrfToken: req.csrfToken(), messages: messages, hasErrors: messages.length > 0 });
+        } 
     }
 }
 
