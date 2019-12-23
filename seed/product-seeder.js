@@ -12,25 +12,25 @@ var products = [
         imgPath: 'receiver.jpg',
         title: 'Receiver',
         description: 'Awesome receiver',
-        price: 5
+        price: 10
     }),
     new Product({
         imgPath: 'tv.jpg',
         title: 'TV',
         description: 'Awesome TV',
-        price: 5
+        price: 400
     }),
     new Product({
         imgPath: 'speaker.jpg',
         title: 'Speaker',
         description: 'Awesome Speaker',
-        price: 5
+        price: 30
     }),
     new Product({
         imgPath: 'tool.jpg',
         title: 'Tools',
         description: 'The best Tools',
-        price: 5
+        price: 20
     }),
 ];
 let done = 0;
