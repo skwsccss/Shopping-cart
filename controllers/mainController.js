@@ -2,7 +2,7 @@ var productModel = require('../models/product');
 var passport = require('passport');
 var Cart = require('../models/cart');
 var stripe = require('stripe')('sk_test_OCX26WlNpM0HnP0piResLv1e00ibgv727z')
-
+var OrderModel = require('../models/order');
 
 class mainController {
     async index(req, res) {
@@ -77,11 +77,50 @@ class mainController {
                     req.flash('error', err.message);
                     return res.redirect('/checkout');
                 }
-                req.flash('success', 'Successfully bought product!');
-                req.session.cart = null;
-                res.redirect('/');
+                let order = new OrderModel({
+                    user: req.user,
+                    cart: cart,
+                    address: req.body.address,
+                    name: req.body.name,
+                    paymentId: charge.id
+                });
+                order.save((err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    req.flash('success', 'Successfully bought product!');
+                    req.session.cart = null;
+                    res.redirect('/');
+                })
             })
         }
+    }
+
+    async Profile(req, res, next) {
+        let orders = await OrderModel.find({ user: req.user });
+        let cart;
+        orders.forEach((order) => {
+            cart = new Cart(order.cart);
+            order.items = cart.generateArray();
+        });
+        res.render('auth/profile', { orders: orders });
+    }
+    async reduceByOne(req, res, next) {
+        let productId = req.params.id;
+        let cart = new Cart(req.session.cart ? req.session.cart : {});
+
+        cart.reduceByOne(productId);
+        req.session.cart = cart;
+        res.redirect('/shopping-cart');
+    }
+
+    async remove(req, res, next) {
+        let productId = req.params.id;
+        let cart = new Cart(req.session.cart ? req.session.cart : {});
+
+        cart.removeItem(productId);
+        req.session.cart = cart;
+         res.redirect('/shopping-cart');
     }
 }
 

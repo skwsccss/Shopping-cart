@@ -8,9 +8,7 @@ var csrfProtection = csrf();
 var passport = require('passport')
 router.use(csrfProtection);
 
-router.get('/profile', isLoggedIn, (req, res, next) => {
-  res.render('auth/profile');
-});
+router.get('/profile', isLoggedIn, main.Profile);
 
 router.get('/logout', isLoggedIn, (req, res) => {
   req.logOut();
@@ -24,20 +22,36 @@ router.use('/', notLoggedIn, (req, res, next) => {
 /* GET users listing. */
 router.get('/signup', main.signup);
 router.post('/signup', passport.authenticate('local-signup', {
-  successRedirect: '/users/profile',
+  // successRedirect: '/users/profile', ==> callback
   failureRedirect: '/users/signup',
   failureFlash: true
-}));
+}), (req, res, next) => {
+  if (req.session.oldUrl) {
+    let oldUrl = req.session.oldUrl;
+    req.session.oldUrl = null;
+    res.redirect(oldUrl);
+  } else {
+    res.redirect('/users/profile');
+  }
+});
 // router.post('/signup', (req, res) => {
 //   console.log(req.method, req.body);
 // });
 router.get('/signin', main.signin);
 // router.post('/signin', main.signin);
 router.post('/signin', passport.authenticate('local-signin', {
-  successRedirect: '/users/profile',
+  // successRedirect: '/users/profile',instead this ==> callback function
   failureRedirect: '/users/signin',
   failureFlash: true
-}));
+}), (req, res, next) => {
+  if (req.session.oldUrl) {
+    let oldUrl = req.session.oldUrl;
+    req.session.oldUrl = null;
+    res.redirect(oldUrl);
+  } else {
+    res.redirect('/users/profile');
+  }
+});
 
 
 
