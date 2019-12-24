@@ -10,6 +10,9 @@ router.use(bodyParser.json());
 router.get('/', main.index);
 router.get('/add-to-cart/:id', main.addToCart);
 router.get('/shopping-cart', main.shoppingCart);
+router.get('/checkout', main.checkout);
+router.post('/checkout', main.checkout);
+// router.post('/checkout', main);
 // router.get('')
 
 module.exports = router;
